@@ -101,7 +101,7 @@ function Human(name, height, weight, diet) {
     this.height = height;
     this.weight = weight;
     this.diet = diet
-};
+}
 // Use IIFE to get human data from form
 /**
  * @description New Human Object
@@ -122,11 +122,11 @@ const getHuman = () => {
     human.weight = document.getElementById('weight').value;
     human.diet = document.getElementById('diet').value;
     tiles();
-    (humTile = () => {
-        humTile = document.createElement('DIV');
-        image = document.createElement('IMG');
+    (function humTileGen() {
+        const humTile = document.createElement('DIV');
+        const image = document.createElement('IMG');
         image.src = `images/human.png`
-        text = document.createElement('P');
+        const text = document.createElement('P');
         text.innerHTML = human.name.toString();
         humTile.appendChild(text)
         humTile.appendChild(image)
@@ -157,9 +157,9 @@ const getHuman = () => {
  * @param {string} human.name - Name from Human Object
  * @returns {string} - Returns fact string
  */
-facts = [
-    compareHeight = (d) => {
-        var diff = d.height - human.height;
+const facts = [
+    function compareHeight(d) {
+        let diff = d.height - human.height;
         if (diff < 0) {
             return `${human.name} is taller than ${d.species} by ${diff * (-1)} inches!`
         } else {
@@ -168,7 +168,7 @@ facts = [
     },
     // Create Dino Compare Method 2
     // NOTE: Weight Difference
-    compareWeight = (d) => {
+    function compareWeight(d) {
         var diff = d.weight - human.weight;
         if (diff < 0) {
             return `${human.name} is heavier than ${d.species} by ${diff * (-1)} pounds!`
@@ -176,17 +176,14 @@ facts = [
             return `${d.species} is ${diff} pounds beavier than ${human.name}!`
         }
     },
-
     // Create Dino Compare Method 3
     // NOTE: Diet Difference
-    compareDiet = (d) => {
+    function compareDiet(d) {
         return `${human.name} is ${human.diet} and ${d.species} is a ${d.diet}.`
     },
-
-    fact = (d) => {
+    function fact(d) {
         return d.fact;
     }
-
 ];
 
 
@@ -203,27 +200,30 @@ facts = [
  * @param {Object} facts - Array of Functions which return text
  * @returns {Object[]} - Array Of HTML Nodes 
  */
-tiles = () => dinoTiles = ObjectifiedDinos.map(
-    (dino) => {
-        dinoTile = document.createElement('DIV');
-        image = document.createElement('IMG');
-        image.src = `images/${dino.species.toLowerCase()}.png`
-        text = document.createElement('P');
-        //TODO: sub function to choose a random fact and return it to text.innerHTML
-        if (dino.species != 'Pigeon') {
-            //pic a random number that is based on the length of the facts array
-            text.innerHTML = facts[Math.floor(Math.random() * facts.length)](dino)
-        }
-        else {
-            text.innerHTML = fact(dino);
-        };
 
-        dinoTile.appendChild(text)
-        dinoTile.appendChild(image);
-        dinoTile.classList.add('grid-item')
-        return dinoTile
-    }
-);
+let dinoTiles = [];
+let tiles = () => {
+    dinoTiles = ObjectifiedDinos.map(
+        (dino) => {
+            const dinoTile = document.createElement('DIV');
+            const image = document.createElement('IMG');
+            image.src = `images/${dino.species.toLowerCase()}.png`
+            const text = document.createElement('P');
+            if (dino.species != 'Pigeon') {
+                //pic a random number that is based on the length of the facts array
+                text.innerHTML = facts[Math.floor(Math.random() * facts.length)](dino)
+            }
+            else {
+                text.innerHTML = dino.fact;
+            }
+
+            dinoTile.appendChild(text)
+            dinoTile.appendChild(image);
+            dinoTile.classList.add('grid-item')
+            return dinoTile
+        }
+    );
+}
 // Add tiles to DOM
 /**
  * @description Loops through tile array and appends each to the DOM
